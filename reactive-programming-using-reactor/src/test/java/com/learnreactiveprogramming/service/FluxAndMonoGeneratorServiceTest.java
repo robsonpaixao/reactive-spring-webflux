@@ -27,10 +27,12 @@ class FluxAndMonoGeneratorServiceTest {
 
     @Test
     void fluxNamesMap() {
-        var fluxNames = fluxAndMonoGeneratorService.fluxNamesMap();
+        int stringLength = 3;
+
+        var fluxNames = fluxAndMonoGeneratorService.fluxNamesMap(stringLength);
 
         StepVerifier.create(fluxNames)
-                .expectNext("ROB", "TAY", "VINI")
+                .expectNext("4 - VINI")
                 .verifyComplete();
     }
 
