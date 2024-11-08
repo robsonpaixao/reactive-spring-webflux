@@ -3,27 +3,43 @@ package com.learnreactiveprogramming.service;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class FluxAndMonoGeneratorServiceTest {
 
     FluxAndMonoGeneratorService fluxAndMonoGeneratorService = new FluxAndMonoGeneratorService();
 
     @Test
-    void namesFlux() {
-        var namesFlux = fluxAndMonoGeneratorService.fluxNames();
+    void fluxNames() {
+        var fluxNames = fluxAndMonoGeneratorService.fluxNames();
 
-        StepVerifier.create(namesFlux)
+        StepVerifier.create(fluxNames)
                 .expectNext("rob", "tay", "vini")
                 .verifyComplete();
 
-        StepVerifier.create(namesFlux)
+        StepVerifier.create(fluxNames)
                 .expectNextCount(3)
                 .verifyComplete();
 
-        StepVerifier.create(namesFlux)
+        StepVerifier.create(fluxNames)
                 .expectNext("rob")
                 .expectNextCount(2)
+                .verifyComplete();
+    }
+
+    @Test
+    void fluxNamesMap() {
+        var fluxNames = fluxAndMonoGeneratorService.fluxNamesMap();
+
+        StepVerifier.create(fluxNames)
+                .expectNext("ROB", "TAY", "VINI")
+                .verifyComplete();
+    }
+
+    @Test
+    void fluxNamesImmutability() {
+        var fluxNamesImmutability = fluxAndMonoGeneratorService.fluxNamesImmutability();
+
+        StepVerifier.create(fluxNamesImmutability)
+                .expectNext("rob", "tay", "vini")
                 .verifyComplete();
     }
 }
