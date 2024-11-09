@@ -113,4 +113,26 @@ class FluxAndMonoGeneratorServiceTest {
                 .expectNext("V", "I", "N", "I")
                 .verifyComplete();
     }
+
+    @Test
+    void fluxNamesTransform_1() {
+        int stringLength = 6;
+
+        var fluxNamesTransform = fluxAndMonoGeneratorService.fluxNamesTransform(stringLength);
+
+        StepVerifier.create(fluxNamesTransform)
+                .expectNext("default")
+                .verifyComplete();
+    }
+
+    @Test
+    void fluxNamesTransformSwitchIfEmpty() {
+        int stringLength = 6;
+
+        var fluxNamesTransformSwitchIfEmpty = fluxAndMonoGeneratorService.fluxNamesTransformSwitchIfEmpty(stringLength);
+
+        StepVerifier.create(fluxNamesTransformSwitchIfEmpty)
+                .expectNext("D", "E", "F", "A", "U", "L", "T")
+                .verifyComplete();
+    }
 }
