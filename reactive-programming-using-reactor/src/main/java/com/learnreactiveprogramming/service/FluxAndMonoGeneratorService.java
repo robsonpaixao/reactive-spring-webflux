@@ -44,6 +44,13 @@ public class FluxAndMonoGeneratorService {
                 .flatMap(s -> splitStringWithDelay(s));
     }
 
+    public Flux<String> fluxNamesConcatMap(int stringLength) {
+        return Flux.fromIterable(List.of("rob", "tay", "vini"))
+                .map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength)
+                .concatMap(s -> splitStringWithDelay(s));
+    }
+
     public Flux<String> splitString(String name) {
         var charArray = name.split("");
         return Flux.fromArray(charArray);

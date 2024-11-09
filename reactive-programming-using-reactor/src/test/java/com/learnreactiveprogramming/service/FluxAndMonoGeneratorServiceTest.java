@@ -60,10 +60,21 @@ class FluxAndMonoGeneratorServiceTest {
     void fluxNamesFlatMapAsync() {
         int stringLength = 2;
 
-        var fluxNamesFlatMap = fluxAndMonoGeneratorService.fluxNamesFlatMapAsync(stringLength);
+        var fluxNamesFlatMapAsync = fluxAndMonoGeneratorService.fluxNamesFlatMapAsync(stringLength);
 
-        StepVerifier.create(fluxNamesFlatMap)
+        StepVerifier.create(fluxNamesFlatMapAsync)
                 .expectNextCount(10)
+                .verifyComplete();
+    }
+
+    @Test
+    void fluxNamesConcatMap() {
+        int stringLength = 2;
+
+        var fluxNamesConcatMap = fluxAndMonoGeneratorService.fluxNamesConcatMap(stringLength);
+
+        StepVerifier.create(fluxNamesConcatMap)
+                .expectNext("R", "O", "B", "T", "A", "Y", "V", "I", "N", "I")
                 .verifyComplete();
     }
 }
