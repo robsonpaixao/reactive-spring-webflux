@@ -44,4 +44,26 @@ class FluxAndMonoGeneratorServiceTest {
                 .expectNext("rob", "tay", "vini")
                 .verifyComplete();
     }
+
+    @Test
+    void fluxNamesFlatMap() {
+        int stringLength = 3;
+
+        var fluxNamesFlatMap = fluxAndMonoGeneratorService.fluxNamesFlatMap(stringLength);
+
+        StepVerifier.create(fluxNamesFlatMap)
+                .expectNext("V", "I", "N", "I")
+                .verifyComplete();
+    }
+
+    @Test
+    void fluxNamesFlatMapAsync() {
+        int stringLength = 2;
+
+        var fluxNamesFlatMap = fluxAndMonoGeneratorService.fluxNamesFlatMapAsync(stringLength);
+
+        StepVerifier.create(fluxNamesFlatMap)
+                .expectNextCount(10)
+                .verifyComplete();
+    }
 }
