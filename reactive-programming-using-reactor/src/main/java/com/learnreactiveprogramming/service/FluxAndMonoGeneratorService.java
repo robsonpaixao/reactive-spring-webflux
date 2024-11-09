@@ -17,12 +17,32 @@ public class FluxAndMonoGeneratorService {
         return Mono.just("rob");
     }
 
+    public Mono<List<String>> monoNamesFlatMap(int stringLength) {
+        return Mono.just("alex")
+                .map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength)
+                .flatMap(this::splitStringMono);
+    }
+
+    public Flux<String> monoNamesFlatMapMany(int stringLength) {
+        return Mono.just("alex")
+                .map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength)
+                .flatMapMany(this::splitString);
+    }
+
+    private Mono<List<String>> splitStringMono(String s) {
+        var charArray = s.split("");
+        return Mono.just(List.of(charArray));
+    }
+
     public Flux<String> fluxNamesMap(int stringLength) {
         return Flux.fromIterable(List.of("rob", "tay", "vini"))
                 .map(String::toUpperCase)
                 .filter(s -> s.length() > stringLength)
                 .map(s -> s.length() + " - " + s);
     }
+
 
     public Flux<String> fluxNamesImmutability() {
         var namesFlux = Flux.fromIterable(List.of("rob", "tay", "vini"));
