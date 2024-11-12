@@ -146,6 +146,41 @@ public class FluxAndMonoGeneratorService {
         return Flux.mergeSequential(abcFlux, defFlux);
     }
 
+    public Flux<String> exploreZip() {
+        var abcFlux = Flux.just("A", "B", "C");
+        var defFlux = Flux.just("D", "E", "F");
+
+        return Flux.zip(abcFlux, defFlux, (first, second) -> first + second);
+    }
+
+    public Flux<String> exploreZip1() {
+        var abcFlux = Flux.just("A", "B", "C");
+        var defFlux = Flux.just("D", "E", "F");
+
+        var _123Flux = Flux.just("1", "2", "3");
+        var _456Flux = Flux.just("4", "5", "6");
+
+        return Flux.zip(abcFlux, defFlux, _123Flux, _456Flux).map(
+                tuple -> tuple.getT1() + tuple.getT2() + tuple.getT3() + tuple.getT4()
+        );
+    }
+
+    public Flux<String> exploreZipWith() {
+        var abcFlux = Flux.just("A", "B", "C");
+        var defFlux = Flux.just("D", "E", "F");
+
+
+        return abcFlux.zipWith(defFlux, (first, second) -> first + second);
+    }
+
+    public Mono<String> exploreMonoZipWith() {
+        var abcMono = Mono.just("A");
+        var defMono = Mono.just("B");
+
+        return abcMono.zipWith(defMono)
+                .map(tuple -> tuple.getT1() + tuple.getT2());
+    }
+
     public Flux<String> splitString(String name) {
         var charArray = name.split("");
         return Flux.fromArray(charArray);
