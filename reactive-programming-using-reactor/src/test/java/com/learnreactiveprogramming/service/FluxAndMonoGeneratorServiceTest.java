@@ -135,4 +135,22 @@ class FluxAndMonoGeneratorServiceTest {
                 .expectNext("D", "E", "F", "A", "U", "L", "T")
                 .verifyComplete();
     }
+
+    @Test
+    void exploreConcat() {
+        var exploreConcat = fluxAndMonoGeneratorService.exploreConcat();
+
+        StepVerifier.create(exploreConcat)
+                .expectNext("A", "B", "C", "D", "E", "F")
+                .verifyComplete();
+    }
+
+    @Test
+    void exploreConcatWith() {
+        var exploreConcatWith = fluxAndMonoGeneratorService.exploreConcatWith();
+
+        StepVerifier.create(exploreConcatWith)
+                .expectNext("A", "B", "C", "D", "E", "F")
+                .verifyComplete();
+    }
 }
