@@ -118,6 +118,34 @@ public class FluxAndMonoGeneratorService {
         return aMono.concatWith(bMono);
     }
 
+    public Flux<String> exploreMerge() {
+        var abcFlux = Flux.just("A", "B", "C").delayElements(Duration.ofMillis(100));
+        var defFlux = Flux.just("D", "E", "F").delayElements(Duration.ofMillis(125));
+
+        return Flux.merge(abcFlux, defFlux);
+    }
+
+    public Flux<String> exploreMergeWith() {
+        var abcFlux = Flux.just("A", "B", "C").delayElements(Duration.ofMillis(100));
+        var defFlux = Flux.just("D", "E", "F").delayElements(Duration.ofMillis(125));
+
+        return abcFlux.mergeWith(defFlux);
+    }
+
+    public Flux<String> exploreMonoMergeWith() {
+        var abcMono = Mono.just("A");
+        var defMono = Mono.just("B");
+
+        return abcMono.mergeWith(defMono);
+    }
+
+    public Flux<String> exploreMergeSequential() {
+        var abcFlux = Flux.just("A", "B", "C").delayElements(Duration.ofMillis(100));
+        var defFlux = Flux.just("D", "E", "F").delayElements(Duration.ofMillis(125));
+
+        return Flux.mergeSequential(abcFlux, defFlux);
+    }
+
     public Flux<String> splitString(String name) {
         var charArray = name.split("");
         return Flux.fromArray(charArray);
