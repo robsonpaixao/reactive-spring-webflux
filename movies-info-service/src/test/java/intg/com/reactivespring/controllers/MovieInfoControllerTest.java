@@ -77,4 +77,23 @@ class MovieInfoControllerTest {
                 .expectBodyList(MovieInfo.class)
                 .hasSize(3);
     }
+
+    @Test
+    void getMovieInfoById() {
+        var movieInfoId = "abc";
+        webTestClient
+                .get()
+                .uri(MOVIES_INFO_URL + "/{id}", movieInfoId)
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .expectBody()
+                .jsonPath("$.name").isEqualTo("Dark Knight Rises");
+//                .expectBody(MovieInfo.class)
+//                .consumeWith(movieInfoEntityExchangeResult -> {
+//                    var movieInfo = movieInfoEntityExchangeResult.getResponseBody();
+//                    assert movieInfo != null;
+//                    assert movieInfo.getMovieInfoId().equals(movieInfoId);
+//                });
+    }
 }
