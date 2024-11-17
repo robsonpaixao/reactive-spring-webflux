@@ -17,7 +17,7 @@ import java.util.List;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @AutoConfigureWebTestClient
-class MovieInfoControllerTest {
+class MovieInfoControllerIntgTest {
 
     @Autowired
     MovieInfoRepository movieInfoRepository;
@@ -98,6 +98,17 @@ class MovieInfoControllerTest {
     }
 
     @Test
+    void getMovieInfoById_1() {
+        var id = "def";
+        webTestClient
+                .get()
+                .uri(MOVIES_INFO_URL + "/{id}", id)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
+
+    @Test
     void updateMovieInfo() {
         var movieInfoId = "abc";
 
@@ -118,5 +129,32 @@ class MovieInfoControllerTest {
                     assert updatedMovieInfo.getMovieInfoId().equals(movieInfoId);
                     assert updatedMovieInfo.getName().equals("Dark Knight Rises 1");
                 });
+    }
+
+    @Test
+    void updateMovieInfo_notFound() {
+        var id = "abc1";
+        var updatedMovieInfo = new MovieInfo("abc", "Dark Knight Rises 1",
+                2013, List.of("Christian Bale1", "Tom Hardy1"), LocalDate.parse("2012-07-20"));
+
+        webTestClient
+                .put()
+                .uri(MOVIES_INFO_URL + "/{id}", id)
+                .bodyValue(updatedMovieInfo)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
+
+    @Test
+    void deleteMovieInfoById() {
+        var id = "abc";
+
+        webTestClient
+                .delete()
+                .uri(MOVIES_INFO_URL + "/{id}", id)
+                .exchange()
+                .expectStatus()
+                .isNoContent();
     }
 }
