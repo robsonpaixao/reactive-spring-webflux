@@ -97,6 +97,27 @@ public class MovieInfoControllerUnitTest {
     }
 
     @Test
+    void addNewMovieInfoValidation() {
+        var movieInfo = new MovieInfo(null, "",
+                -2005, List.of(""), LocalDate.parse("2005-06-15"));
+
+        webTestClient
+                .post()
+                .uri(MOVIES_INFO_URL)
+                .bodyValue(movieInfo)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody(String.class)
+                .consumeWith(stringEntityExchangeResult -> {
+                    var error = stringEntityExchangeResult.getResponseBody();
+                    assert  error!=null;
+                    String expectedErrorMessage = "movieInfo.cast must be present,movieInfo.name must be present,movieInfo.year must be a positive value";
+                    assertEquals(expectedErrorMessage, error);
+                });
+    }
+
+    @Test
     void updateMovieInfo() {
         var id = "abc";
         var updatedMovieInfo = new MovieInfo("abc", "Dark Knight Rises 1",
