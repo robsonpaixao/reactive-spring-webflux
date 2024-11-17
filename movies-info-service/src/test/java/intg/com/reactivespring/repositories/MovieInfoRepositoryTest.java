@@ -102,4 +102,13 @@ class MovieInfoRepositoryTest {
                 .verifyComplete();
 
     }
+
+    @Test
+    void findByYear() {
+        var moviesInfoFlux = movieInfoRepository.findByYear(2005);
+
+        StepVerifier.create(moviesInfoFlux)
+                .expectNextCount(1)
+                .verifyComplete();
+    }
 }
