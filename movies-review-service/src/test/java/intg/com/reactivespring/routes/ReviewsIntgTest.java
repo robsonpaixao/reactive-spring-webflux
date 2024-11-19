@@ -13,6 +13,9 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @AutoConfigureWebTestClient
@@ -41,6 +44,40 @@ public class ReviewsIntgTest {
     }
 
     @Test
+    void getReviews() {
+        webTestClient
+                .get()
+                .uri("/v1/reviews")
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .expectBodyList(Review.class)
+                .value(reviews -> {
+                    assertEquals(3, reviews.size());
+                });
+    }
+
+
+    @Test
+    void getReviewsByMovieInfoId() {
+        webTestClient
+                .get()
+                .uri(uriBuilder -> {
+                    return uriBuilder.path("/v1/reviews")
+                            .queryParam("movieInfoId", "1")
+                            .build();
+                })
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .expectBodyList(Review.class)
+                .value(reviewList -> {
+                    System.out.println("reviewList : " + reviewList);
+                    assertEquals(2, reviewList.size());
+                });
+    }
+
+    @Test
     void addReview() {
         var review = new Review(null, 1L, "Awesome Movie", 9.0);
 
@@ -57,5 +94,44 @@ public class ReviewsIntgTest {
                     assert savedReview != null;
                     assert savedReview.getReviewId() != null;
                 });
+    }
+
+    @Test
+    void updateReview() {
+        var review = new Review(null, 1L, "Awesome Movie", 9.0);
+        var savedReview = reviewReactiveRepository.save(review).block();
+        var reviewUpdate = new Review(null, 1L, "Not an Awesome Movie", 8.0);
+
+        assert savedReview != null;
+
+        webTestClient
+                .put()
+                .uri("/v1/reviews/{id}", savedReview.getReviewId())
+                .bodyValue(reviewUpdate)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Review.class)
+                .consumeWith(reviewResponse -> {
+                    var updatedReview = reviewResponse.getResponseBody();
+                    assert updatedReview != null;
+                    System.out.println("updatedReview : " + updatedReview);
+                    assertNotNull(savedReview.getReviewId());
+                    assertEquals(8.0, updatedReview.getRating());
+                    assertEquals("Not an Awesome Movie", updatedReview.getComment());
+                });
+
+    }
+
+    @Test
+    void deleteReview() {
+        var review = new Review(null, 1L, "Awesome Movie", 9.0);
+        var savedReview = reviewReactiveRepository.save(review).block();
+
+        assert savedReview != null;
+        webTestClient
+                .delete()
+                .uri("/v1/reviews/{id}", savedReview.getReviewId())
+                .exchange()
+                .expectStatus().isNoContent();
     }
 }
