@@ -108,6 +108,8 @@ public class MoviesControllerIntgTest {
                 .uri("/v1/movies/{id}", "abc")
                 .exchange()
                 .expectStatus().is4xxClientError();
+
+        WireMock.verify(1, getRequestedFor(urlEqualTo("/v1/moviesinfo/" + movieId)));
     }
 
     @Test
@@ -152,6 +154,8 @@ public class MoviesControllerIntgTest {
                 .value(message -> {
                     assertEquals("Server exception in MoviesInfoService MovieInfo Service Unavailable", message);
                 });
+
+        WireMock.verify(4, getRequestedFor(urlEqualTo("/v1/moviesinfo/" + movieId)));
     }
 
     @Test
@@ -177,5 +181,7 @@ public class MoviesControllerIntgTest {
                 .value(message -> {
                     assertEquals("Review Service Unavailable", message);
                 });
+
+        WireMock.verify(4, getRequestedFor(urlPathMatching("/v1/reviews*")));
     }
 }
